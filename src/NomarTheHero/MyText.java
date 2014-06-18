@@ -31,7 +31,7 @@ public class MyText extends JavaPlugin implements Listener {
 	private String grey = ChatColor.GRAY.toString();
 	String boldGreen = ChatColor.GREEN.toString() + ChatColor.BOLD.toString();
 
-	public String starter = ChatColor.BLUE + "[" + ChatColor.LIGHT_PURPLE + "NoSpam" + ChatColor.BLUE + "] " + ChatColor.GOLD;
+	public String noSpamStarter = ChatColor.BLUE + "[" + ChatColor.LIGHT_PURPLE + "NoSpam" + ChatColor.BLUE + "] " + ChatColor.GOLD;
 
 	public Map<String, String> playerChat = new HashMap<String, String>();
 	public Map<String, Long> chatCooldown = new HashMap<String, Long>();
@@ -80,30 +80,36 @@ public class MyText extends JavaPlugin implements Listener {
 		Player p = e.getPlayer();
 
 		long time = System.currentTimeMillis();
+
 		if (chatCooldown.containsKey(p.getName())) {
-			int wait = 1000;
-			String swait = "1";
-			if (Bukkit.getOnlinePlayers().length > 15 && Bukkit.getOnlinePlayers().length <= 25) {
-				wait = 1500;
-				swait = "1.5";
-			} else if (Bukkit.getOnlinePlayers().length > 25) {
-				wait = 2000;
-				swait = "2";
+
+			int waitTime = 1000;
+
+			final int onlinePlayers = Bukkit.getOnlinePlayers().length;
+
+			if (onlinePlayers > 15 && onlinePlayers <= 25) {
+				waitTime = 1500;
+
+			} else if (onlinePlayers > 25) {
+				waitTime = 2000;
+
 			}
-			if (time - chatCooldown.get(p.getName()) < wait) {
-				p.sendMessage(starter + "Please wait at least " + ChatColor.AQUA + swait + ChatColor.GOLD + " second between messages!");
+
+			if (time - chatCooldown.get(p.getName()) < waitTime) {
+				p.sendMessage(noSpamStarter + "Please wait at least " + ChatColor.AQUA + waitTime / 1000.0 + ChatColor.GOLD + " second between messages!");
 				e.setCancelled(true);
 				cancel = true;
 				return;
 
 			} else
 				chatCooldown.put(p.getName(), time);
+
 		} else
 			chatCooldown.put(p.getName(), time);
 
 		if (playerChat.containsKey(p.getName()) && cancel == false) {
 			if (playerChat.get(p.getName()).equals(message)) {
-				p.sendMessage(starter + "Please do not say the same message twice!");
+				p.sendMessage(noSpamStarter + "Please do not say the same message twice!");
 				e.setCancelled(true);
 				return;
 			} else
@@ -134,7 +140,7 @@ public class MyText extends JavaPlugin implements Listener {
 		if (message.length() > 6 && caps > 0) {
 			if ((float) caps / message.length() >= iPercent) {
 				e.setMessage(message.toLowerCase());
-				p.sendMessage(starter + "Do not use too much caps!");
+				p.sendMessage(noSpamStarter + "Do not use too many caps!");
 			}
 		}
 
