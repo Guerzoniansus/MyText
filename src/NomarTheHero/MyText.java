@@ -1,0 +1,226 @@
+package NomarTheHero;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
+
+
+public class MyText extends JavaPlugin implements Listener {
+	
+	public static ArrayList<String> players = new ArrayList<String>();
+	
+	public boolean cancel = false;
+        
+    
+	public String prefix = ChatColor.GOLD + "---------------------------------------------";
+	public String red = ChatColor.RED + "";
+	public String starter = ChatColor.BLUE + "[" + ChatColor.LIGHT_PURPLE + "NoSpam" + ChatColor.BLUE + "] " + ChatColor.GOLD;
+	
+	public Map<String, String> playerChat = new HashMap<String, String>();
+	public Map<String, Long> chatCooldown = new HashMap<String, Long>();
+    
+    public void onEnable(){
+        getServer().getPluginManager().registerEvents(this, this);
+        this.saveDefaultConfig();
+    	getCommand("tempperm").setExecutor(new VoteCommand(this));
+    }
+    
+    public void onDisable(){
+    	for (String pName : players){
+    		Player player = Bukkit.getPlayer(pName);
+    		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
+    		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset tpa");
+    		Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset tpahere");
+    	}
+    }
+    
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e){
+    	final Player p = e.getPlayer();
+    	BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
+    	scheduler.scheduleSyncDelayedTask(this, new Runnable(){
+    		
+    		@Override
+    		public void run(){
+    	    	if (getConfig().getString("server").equals("creative")) joinMessageCreative(p);
+    	    	else if (getConfig().getString("server").equals("survival")) joinMessageSurvival(p);
+    		}
+    	}, 40L);
+    }
+    	
+    	
+    
+    @EventHandler (priority=EventPriority.NORMAL)
+    public void onChat(AsyncPlayerChatEvent e){
+    	
+    	
+    	String message = e.getMessage();
+    	Player p = e.getPlayer();
+    
+    	
+    	long time = System.currentTimeMillis();
+    	if (chatCooldown.containsKey(p.getName())){
+    		int wait = 1000;
+    		String swait = "1";
+    		if (Bukkit.getOnlinePlayers().length > 15 && Bukkit.getOnlinePlayers().length <= 25) {wait = 1500; swait = "1,5";}
+    		else if (Bukkit.getOnlinePlayers().length > 25) {wait = 2000; swait = "2";}
+    		if (time - chatCooldown.get(p.getName()) < wait){
+                p.sendMessage(starter + "Please wait at least " + ChatColor.AQUA + swait + ChatColor.GOLD + " second between messages!");
+                e.setCancelled(true);
+                cancel = true;
+                return;
+
+    		}
+    		else chatCooldown.put(p.getName(), time);
+    	}
+    	else chatCooldown.put(p.getName(), time);
+    	
+    	
+    	if (playerChat.containsKey(p.getName()) && cancel == false){
+    		if (playerChat.get(p.getName()).equals(message)){
+    			p.sendMessage(starter + "Please do not say the same message twice!");
+    			e.setCancelled(true);
+    			return;
+    		}
+    		else  playerChat.put(p.getName(), message);
+    	}
+    	else if (cancel == true) { cancel = false; return;}
+    	else playerChat.put(p.getName(), message);
+    	
+    	
+    	int caps = 0;
+    	for(int i=0; i<message.length(); i++){
+    		if (Character.isWhitespace(message.charAt(i))) continue;
+    		if(Character.isUpperCase(message.charAt(i))){
+    	        caps++;
+    	    }
+    	}
+    	
+    	/*int iPercent = 70;
+    	if (message.length() > 6 && caps > 0){
+    		if (caps / message.length() * 100 >= iPercent){
+    			e.setMessage(message.toLowerCase());
+    			p.sendMessage(starter + "Do not use too much caps!");
+    		}
+    	}
+    	*/
+    	
+        float iPercent = .5f;
+        if (message.length() > 6 && caps > 0){
+            if ((float) caps / message.length() >= iPercent){
+                e.setMessage(message.toLowerCase());
+                p.sendMessage(starter + "Do not use too much caps!");
+            }
+        }
+    	
+    }
+    
+    
+    
+    
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+    	Player p = (Player) sender;
+    	if (p.hasPermission("MyText.use") || p.isOp()){
+    		if (args.length == 0){
+    			switch (cmd.getName().toLowerCase()){
+    			case "ranks": 
+    				p.sendMessage(prefix);
+    				p.sendMessage(ChatColor.RED + " Info about all ranks can be found here:");
+    				p.sendMessage(ChatColor.RED + " http://monkeygamesmc.com/help");
+    				p.sendMessage(prefix);
+    				return true;
+    			case "shop":
+    				p.sendMessage(prefix);
+    				p.sendMessage(red + " Vip: €7,99 - Vip+: €14,99 - Hero: €24,99");
+    				p.sendMessage(red + " To see donator ranks and benefits go here:");
+    				p.sendMessage(red + " http://monkeygamesmc.com/shop");
+    				p.sendMessage(prefix);
+    				return true;
+    			case "website":
+    				p.sendMessage(prefix);
+    				p.sendMessage(red + " Website:");
+    				p.sendMessage(red + " http://MonkeyGamesMC.com");
+    				p.sendMessage(prefix);
+    				return true;
+    			case "faq":
+    				p.sendMessage(prefix);
+    				p.sendMessage(red + " Frequently Asked Questions:");
+    				p.sendMessage(red + " http://MonkeyGamesMC.com/help");
+    				p.sendMessage(prefix);
+    				return true;
+    			case "contest":
+    				p.sendMessage(prefix);
+    				p.sendMessage(red + " Info about build contest:");
+    				p.sendMessage(red + " http://monkeygamesmc.com/forum/m/20531573/viewthread/11143786/-read-on-building-contests");
+    				p.sendMessage(prefix);
+    				return true;
+    			case "member":
+    				p.sendMessage(prefix);
+    				p.sendMessage(red + " To get Member visit this page:");
+    				p.sendMessage(red + " http://MonkeyGamesMC.com/Member");
+    				p.sendMessage(prefix);
+    			}
+    		}
+    	}
+    		
+    	return false;
+    }
+    
+    public void joinMessageCreative(Player p){
+    	String wel = ChatColor.WHITE + "" + ChatColor.BOLD + "";
+    	String go = ChatColor.GOLD + "";
+    	String grey = ChatColor.GRAY + "";
+    	String pre = ChatColor.GREEN + "" + ChatColor.BOLD + "";
+    	String prefix = go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-";
+		p.sendMessage(prefix + prefix + prefix + go+"*");  
+    	p.sendMessage("");
+    	p.sendMessage(wel + " Welcome to MonkeyCraft Creative!");
+    	p.sendMessage(wel + " Survival IP: Life.MonkeyGamesMC.com");
+    	p.sendMessage("");
+    	p.sendMessage(pre + " To start building type /plotme auto");
+    	p.sendMessage(pre + " Donate: /shop");
+    	p.sendMessage(pre + " Member: /member");
+    	p.sendMessage(pre + " Info, ranks, minigames etc: /faq");
+    	p.sendMessage(pre + " Vote for 30 minutes WorldEdit: /vote");
+    	p.sendMessage("");
+    	p.sendMessage(pre + " To stay updated visit the homepage regulary!");
+    	p.sendMessage("");
+    	p.sendMessage(prefix + prefix + prefix + go+"*");
+    }
+    
+    public void joinMessageSurvival(Player p){
+    	String wel = ChatColor.WHITE + "" + ChatColor.BOLD + "";
+    	String go = ChatColor.GOLD + "";
+    	String grey = ChatColor.GRAY + "";
+    	String pre = ChatColor.GREEN + "" + ChatColor.BOLD + "";
+    	String prefix = go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-"+go+"*"+grey+"-";	
+    	p.sendMessage(prefix + prefix + prefix + go + "*");
+    	p.sendMessage("");
+    	p.sendMessage(wel + " Welcome to MonkeyCraft Survival!");
+    	p.sendMessage(wel + " Creative IP: Build.MonkeyGamesMC.com");
+    	p.sendMessage("");
+    	p.sendMessage(pre + " Donate: /shop");
+    	p.sendMessage(pre + " Member: /member");
+    	p.sendMessage(pre + " Info, ranks, minigames etc: /faq");
+    	p.sendMessage("");
+    	p.sendMessage(pre + " To stay updated visit the homepage regulary!");
+    	p.sendMessage("");  	
+    	p.sendMessage(prefix + prefix + prefix + go + "*");
+    }
+
+
+
+}
