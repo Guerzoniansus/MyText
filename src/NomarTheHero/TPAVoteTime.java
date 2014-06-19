@@ -26,7 +26,8 @@ public class TPAVoteTime implements Runnable {
 
 		}
 
-		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " unset worldedit.*");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " unset essentials.tpa");
+		Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " unset essentials.tpahere");
 
 		Player player = Bukkit.getServer().getPlayer(ign);
 

@@ -98,6 +98,9 @@ public class VoteCommand implements CommandExecutor {
 					// adds VT to list
 					MyText.TPAvotes.put(ign, newVT);
 
+					// sends confirmation
+					player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining time!");
+
 					return true;
 				}
 
@@ -117,11 +120,9 @@ public class VoteCommand implements CommandExecutor {
 				// makes le TPAVoteTime var run in 30 minutes
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 600L);
 
-				// allows the player to use TPA
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set worldedit.*");
-
-				// sends confirmation
-				player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining time!");
+				// allows the player to use TPA and TPAHERE
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpa");
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpahere");
 
 				return true;
 
