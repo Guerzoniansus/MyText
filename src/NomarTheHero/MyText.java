@@ -60,7 +60,7 @@ public class MyText extends JavaPlugin implements Listener {
 
 			}
 
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
 
 		}
 
@@ -72,8 +72,8 @@ public class MyText extends JavaPlugin implements Listener {
 
 			}
 
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset tpa");
-			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset tpahere");
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpa");
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpahere");
 
 		}
 

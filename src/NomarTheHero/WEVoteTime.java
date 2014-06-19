@@ -7,11 +7,15 @@ import org.bukkit.entity.Player;
 public class WEVoteTime implements Runnable {
 
 	private String ign;
-	private long startTime;
-	private int id;
+	private long startTime, duration;
 	private boolean cancelled = false;
 
-	public WEVoteTime(String ign, long startTime) {
+	public WEVoteTime(String ign, long startTime, long duration) {
+
+		// duration in ticks
+
+		this.duration = duration;
+
 		this.ign = ign;
 		this.startTime = startTime;
 
@@ -40,21 +44,6 @@ public class WEVoteTime implements Runnable {
 
 	}
 
-	public String getIgn() {
-		return ign;
-
-	}
-
-	public void setID(int id) {
-		this.id = id;
-
-	}
-
-	public int getID() {
-		return id;
-
-	}
-
 	public void cancel() {
 		cancelled = true;
 		MyText.WEvotes.remove(ign);
@@ -69,7 +58,7 @@ public class WEVoteTime implements Runnable {
 		// 1000/20 = 50
 		// 50 millis per tick!
 
-		return (System.currentTimeMillis() - startTime) / 50;
+		return duration - ((System.currentTimeMillis() - startTime) / 50);
 
 	}
 }

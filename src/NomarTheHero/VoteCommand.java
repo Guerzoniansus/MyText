@@ -19,120 +19,158 @@ public class VoteCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-		if (command.getName().equalsIgnoreCase("tempperm")) {
+		if (args.length != 2) {
+			return true;
+		}
 
-			final String ign = args[0];
+		final String ign = args[0];
 
-			final Player player = plugin.getServer().getPlayer(ign);
+		final Player player = plugin.getServer().getPlayer(ign);
 
-			if (player == null) {
-				plugin.getServer().getLogger().info("Could not give tempperm time to player " + ign);
-				return true;
+		if (player == null) {
+			plugin.getServer().getLogger().info("Could not give tempperm time to player " + ign);
+			return true;
 
-			}
+		}
 
-			if (args[1].equalsIgnoreCase("wetime")) {
+		String subcmd = args[1].toLowerCase();
 
-				// if player already has voted and is in the 30 min range
-				if (MyText.WEvotes.containsKey(ign)) {
+		if (subcmd.equals("wetime")) {
 
-					// gets the existing VT var
-					WEVoteTime existing = MyText.WEvotes.get(ign);
+			// if player already has voted and is in the 30 min range
+			if (MyText.WEvotes.containsKey(ign)) {
 
-					// cancels the existing VT var so it doesn't run
-					existing.cancel();
+				// gets the existing VT var
+				WEVoteTime existing = MyText.WEvotes.get(ign);
 
-					// makes new VT
-					WEVoteTime newVT = new WEVoteTime(ign, System.currentTimeMillis());
+				// cancels the existing VT var so it doesn't run
+				existing.cancel();
 
-					// adds VT to list
-					MyText.WEvotes.put(ign, newVT);
+				// makes new VT
+				WEVoteTime newVT = new WEVoteTime(ign, System.currentTimeMillis(), 36000L + existing.getTicksLeft());
 
-					// schedules the VT
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 600L + existing.getTicksLeft());
+				// removes old VT
+				MyText.WEvotes.remove(ign);
 
-					// sends confirmation
-					player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining time!");
+				// adds VT to list
+				MyText.WEvotes.put(ign, newVT);
 
-					return true;
-				}
+				// schedules the VT
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
 
-				/*
-				 * ANNOUNCE TO LE SERVER THAT SUCH AND SUCH HAS VOTED BLA BLA
-				 * YEY
-				 */
-
-				// makes new WEVoteTime var
-				WEVoteTime weTime = new WEVoteTime(ign, System.currentTimeMillis());
-
-				// puts in in le list
-				MyText.WEvotes.put(ign, weTime);
-
-				// 36000 ticks in 30 minutes
-
-				// makes le WEVoteTime var run in 30 minutes
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 600L);
-
-				// allows the player to use WE
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set worldedit.*");
+				// sends confirmation
+				player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining WorldEdit time!");
 
 				return true;
 			}
 
-			else if (args[1].equalsIgnoreCase("tpatime")) {
-				// if player already has voted and is in the 30 min range
-				if (MyText.TPAvotes.containsKey(ign)) {
+			/*
+			 * ANNOUNCE TO LE SERVER THAT SUCH AND SUCH HAS VOTED BLA BLA YEY
+			 * P.S. make sure to change the 600L to whatever time you want (in
+			 * server ticks)
+			 */
 
-					// gets the existing VT var
-					TPAVoteTime existing = MyText.TPAvotes.get(ign);
+			// makes new WEVoteTime var
+			WEVoteTime weTime = new WEVoteTime(ign, System.currentTimeMillis(), 36000L);
 
-					// cancels the existing VT var so it doesn't run
-					existing.cancel();
+			// puts in in le list
+			MyText.WEvotes.put(ign, weTime);
 
-					// makes new VT
-					TPAVoteTime newVT = new TPAVoteTime(ign, System.currentTimeMillis());
+			// 36000 ticks in 30 minutes
 
-					// schedules the VT
-					plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 600L + existing.getTicksLeft());
+			// makes le WEVoteTime var run in 30 minutes
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 36000L);
 
-					// adds VT to list
-					MyText.TPAvotes.put(ign, newVT);
+			// allows the player to use WE
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set worldedit.*");
 
-					// sends confirmation
-					player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining time!");
+			return true;
 
-					return true;
-				}
+		} else if (subcmd.equals("tpatime")) {
+			// if player already has voted and is in the 30 min range
+			if (MyText.TPAvotes.containsKey(ign)) {
 
-				/*
-				 * ANNOUNCE TO LE SERVER THAT SUCH AND SUCH HAS VOTED BLA BLA
-				 * YEY
-				 */
+				// gets the existing VT var
+				TPAVoteTime existing = MyText.TPAvotes.get(ign);
 
-				// makes new TPAVoteTime var
-				TPAVoteTime weTime = new TPAVoteTime(ign, System.currentTimeMillis());
+				// cancels the existing VT var so it doesn't run
+				existing.cancel();
 
-				//
-				MyText.TPAvotes.put(ign, weTime);
+				// makes new VT
+				TPAVoteTime newVT = new TPAVoteTime(ign, System.currentTimeMillis(), 36000L + existing.getTicksLeft());
 
-				// 36000 ticks in 30 minutes
+				// removes old VT
+				MyText.TPAvotes.remove(ign);
 
-				// makes le TPAVoteTime var run in 30 minutes
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 600L);
+				// adds VT to list
+				MyText.TPAvotes.put(ign, newVT);
 
-				// allows the player to use TPA and TPAHERE
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpa");
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpahere");
+				// schedules the VT
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
+
+				// sends confirmation
+				player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining TPA time!");
 
 				return true;
+			}
 
-				// 1728000 =
+			/*
+			 * ANNOUNCE TO LE SERVER THAT SUCH AND SUCH HAS VOTED BLA BLA YEY
+			 * P.S. make sure to change the 600L to whatever time you want (in
+			 * server ticks)
+			 */
+
+			// makes new TPAVoteTime var
+			TPAVoteTime weTime = new TPAVoteTime(ign, System.currentTimeMillis(), 36000L);
+
+			// puts in in le list
+			MyText.TPAvotes.put(ign, weTime);
+
+			// 36000 ticks in 30 minutes
+
+			// makes le TPAVoteTime var run in 30 minutes
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 36000L);
+
+			// allows the player to use TPA
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpa");
+			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpahere");
+
+			return true;
+
+		} else if (subcmd.equals("votestat")) {
+
+			String tpa = ChatColor.GOLD + "TPA voting stats: " + ChatColor.YELLOW;
+			String we = ChatColor.GOLD + "WE voting stats: " + ChatColor.YELLOW;
+
+			if (MyText.WEvotes.containsKey(ign)) {
+
+				WEVoteTime wev = MyText.WEvotes.get(ign);
+
+				we += ("WE time left: (" + wev.getTicksLeft() + "ticks) (" + (wev.getTicksLeft() / 1200.0) + "minutes)");
+
+			} else {
+
+				we += "Has not voted.";
 
 			}
+
+			if (MyText.TPAvotes.containsKey(ign)) {
+
+				TPAVoteTime wev = MyText.TPAvotes.get(ign);
+
+				tpa += ("TPA time left: (" + wev.getTicksLeft() + " ticks) (" + (wev.getTicksLeft() / 1200.0) + " minutes)");
+
+			} else {
+
+				tpa += "Has not voted.";
+
+			}
+
+			sender.sendMessage(tpa);
+			sender.sendMessage(we);
 
 		}
 
 		return true;
-
 	}
 }
