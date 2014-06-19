@@ -1,9 +1,7 @@
 package NomarTheHero;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,12 +17,23 @@ import org.bukkit.scheduler.BukkitScheduler;
 
 public class MyText extends JavaPlugin implements Listener {
 
-	public static ArrayList<String> players = new ArrayList<String>();
+	// String = IGN
+
+	public static HashMap<String, WEVoteTime> WEvotes = new HashMap<String, WEVoteTime>();
+
+	public static HashMap<String, TPAVoteTime> TPAvotes = new HashMap<String, TPAVoteTime>();
+
+	// public static ArrayList<String> votingPlayersWE = new
+	// ArrayList<String>();
+
+	// public static ArrayList<String> votingPlayersTPA = new
+	// ArrayList<String>();
 
 	public boolean cancel = false;
 
 	public String prefix = ChatColor.GOLD + "---------------------------------------------";
 
+	// colors
 	private String red = ChatColor.RED.toString();
 	private String gold = ChatColor.GOLD.toString();
 	private String boldWhite = ChatColor.WHITE.toString() + ChatColor.BOLD.toString();
@@ -43,7 +52,7 @@ public class MyText extends JavaPlugin implements Listener {
 	}
 
 	public void onDisable() {
-		for (String pName : players) {
+		for (String pName : WEvotes.keySet()) {
 			Player player = Bukkit.getPlayer(pName);
 
 			if (player == null) {
@@ -52,9 +61,22 @@ public class MyText extends JavaPlugin implements Listener {
 			}
 
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
+
+		}
+
+		for (String pName : TPAvotes.keySet()) {
+			Player player = Bukkit.getPlayer(pName);
+
+			if (player == null) {
+				continue;
+
+			}
+
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset tpa");
 			Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset tpahere");
+
 		}
+
 	}
 
 	@EventHandler
@@ -189,6 +211,9 @@ public class MyText extends JavaPlugin implements Listener {
 					p.sendMessage(prefix);
 				}
 			}
+		} else {
+			p.sendMessage(ChatColor.RED + "You do not have permission to use that command.");
+
 		}
 
 		return false;
