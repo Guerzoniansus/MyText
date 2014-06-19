@@ -9,9 +9,9 @@ import org.bukkit.entity.Player;
 
 public class VoteCommand implements CommandExecutor {
 
-	private MyText plugin;
+	private MonkeyPlugin plugin;
 
-	public VoteCommand(MyText instance) {
+	public VoteCommand(MonkeyPlugin instance) {
 		plugin = instance;
 
 	}
@@ -38,10 +38,10 @@ public class VoteCommand implements CommandExecutor {
 		if (subcmd.equals("wetime")) {
 
 			// if player already has voted and is in the 30 min range
-			if (MyText.WEvotes.containsKey(ign)) {
+			if (MonkeyPlugin.WEvotes.containsKey(ign)) {
 
 				// gets the existing VT var
-				WEVoteTime existing = MyText.WEvotes.get(ign);
+				WEVoteTime existing = MonkeyPlugin.WEvotes.get(ign);
 
 				// cancels the existing VT var so it doesn't run
 				existing.cancel();
@@ -50,10 +50,10 @@ public class VoteCommand implements CommandExecutor {
 				WEVoteTime newVT = new WEVoteTime(ign, System.currentTimeMillis(), 36000L + existing.getTicksLeft());
 
 				// removes old VT
-				MyText.WEvotes.remove(ign);
+				MonkeyPlugin.WEvotes.remove(ign);
 
 				// adds VT to list
-				MyText.WEvotes.put(ign, newVT);
+				MonkeyPlugin.WEvotes.put(ign, newVT);
 
 				// schedules the VT
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
@@ -74,7 +74,7 @@ public class VoteCommand implements CommandExecutor {
 			WEVoteTime weTime = new WEVoteTime(ign, System.currentTimeMillis(), 36000L);
 
 			// puts in in le list
-			MyText.WEvotes.put(ign, weTime);
+			MonkeyPlugin.WEvotes.put(ign, weTime);
 
 			// 36000 ticks in 30 minutes
 
@@ -88,10 +88,10 @@ public class VoteCommand implements CommandExecutor {
 
 		} else if (subcmd.equals("tpatime")) {
 			// if player already has voted and is in the 30 min range
-			if (MyText.TPAvotes.containsKey(ign)) {
+			if (MonkeyPlugin.TPAvotes.containsKey(ign)) {
 
 				// gets the existing VT var
-				TPAVoteTime existing = MyText.TPAvotes.get(ign);
+				TPAVoteTime existing = MonkeyPlugin.TPAvotes.get(ign);
 
 				// cancels the existing VT var so it doesn't run
 				existing.cancel();
@@ -100,10 +100,10 @@ public class VoteCommand implements CommandExecutor {
 				TPAVoteTime newVT = new TPAVoteTime(ign, System.currentTimeMillis(), 36000L + existing.getTicksLeft());
 
 				// removes old VT
-				MyText.TPAvotes.remove(ign);
+				MonkeyPlugin.TPAvotes.remove(ign);
 
 				// adds VT to list
-				MyText.TPAvotes.put(ign, newVT);
+				MonkeyPlugin.TPAvotes.put(ign, newVT);
 
 				// schedules the VT
 				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
@@ -124,7 +124,7 @@ public class VoteCommand implements CommandExecutor {
 			TPAVoteTime weTime = new TPAVoteTime(ign, System.currentTimeMillis(), 36000L);
 
 			// puts in in le list
-			MyText.TPAvotes.put(ign, weTime);
+			MonkeyPlugin.TPAvotes.put(ign, weTime);
 
 			// 36000 ticks in 30 minutes
 
@@ -142,9 +142,9 @@ public class VoteCommand implements CommandExecutor {
 			String tpa = ChatColor.GOLD + "TPA voting stats: " + ChatColor.YELLOW;
 			String we = ChatColor.GOLD + "WE voting stats: " + ChatColor.YELLOW;
 
-			if (MyText.WEvotes.containsKey(ign)) {
+			if (MonkeyPlugin.WEvotes.containsKey(ign)) {
 
-				WEVoteTime wev = MyText.WEvotes.get(ign);
+				WEVoteTime wev = MonkeyPlugin.WEvotes.get(ign);
 
 				we += ("WE time left: (" + wev.getTicksLeft() + "ticks) (" + (wev.getTicksLeft() / 1200.0) + "minutes)");
 
@@ -154,9 +154,9 @@ public class VoteCommand implements CommandExecutor {
 
 			}
 
-			if (MyText.TPAvotes.containsKey(ign)) {
+			if (MonkeyPlugin.TPAvotes.containsKey(ign)) {
 
-				TPAVoteTime wev = MyText.TPAvotes.get(ign);
+				TPAVoteTime wev = MonkeyPlugin.TPAvotes.get(ign);
 
 				tpa += ("TPA time left: (" + wev.getTicksLeft() + " ticks) (" + (wev.getTicksLeft() / 1200.0) + " minutes)");
 

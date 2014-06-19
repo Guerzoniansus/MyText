@@ -37,13 +37,13 @@ public class TPAVoteTime implements Runnable {
 
 		}
 
-		MyText.TPAvotes.remove(ign);
+		MonkeyPlugin.TPAvotes.remove(ign);
 
 	}
 
 	public void cancel() {
 		cancelled = true;
-		MyText.TPAvotes.remove(ign);
+		MonkeyPlugin.TPAvotes.remove(ign);
 
 	}
 

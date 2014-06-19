@@ -40,13 +40,13 @@ public class WEVoteTime implements Runnable {
 
 		}
 
-		MyText.WEvotes.remove(ign);
+		MonkeyPlugin.WEvotes.remove(ign);
 
 	}
 
 	public void cancel() {
 		cancelled = true;
-		MyText.WEvotes.remove(ign);
+		MonkeyPlugin.WEvotes.remove(ign);
 
 	}
 
