@@ -6,6 +6,7 @@ import me.confuser.barapi.BarAPI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -48,24 +49,12 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 
 	public void onDisable() {
 		for (String pName : WEvotes.keySet()) {
-			Player player = Bukkit.getPlayer(pName);
-
-			if (player == null) {
-				continue;
-
-			}
-
+			
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
 			
 		}
 
 		for (String pName : TPAvotes.keySet()) {
-			Player player = Bukkit.getPlayer(pName);
-
-			if (player == null) {
-				continue;
-
-			}
 
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpa");
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpahere");
