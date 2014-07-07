@@ -2,6 +2,7 @@ package NomarTheHero;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -24,6 +25,11 @@ public class JoinEvent implements Listener{
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
+		
+		for (Player player : Bukkit.getServer().getOnlinePlayers()){
+			player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 1);
+		}
+		
 		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
 		scheduler.scheduleSyncDelayedTask(plugin, new Runnable() {
 

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -77,13 +78,6 @@ public class ChatWatcher implements Listener{
 				}
 			}
 
-			/*
-			 * int iPercent = 70; if (message.length() > 6 && caps > 0){ if (caps /
-			 * message.length() * 100 >= iPercent){
-			 * e.setMessage(message.toLowerCase()); p.sendMessage(starter +
-			 * "Do not use too much caps!"); } }
-			 */
-
 			float iPercent = .5f;
 			if (message.length() > 6 && caps > 0) {
 				if ((float) caps / message.length() >= iPercent) {
@@ -91,11 +85,14 @@ public class ChatWatcher implements Listener{
 					p.sendMessage(noSpamStarter + "Do not use too many caps!");
 				}
 			}
+			
+			for (Player player : Bukkit.getServer().getOnlinePlayers()){
+				player.playSound(player.getLocation(), Sound.ITEM_PICKUP, 1, 1);
+			}
 
 		}
 	
-	
-	
+		
 	
 
 }

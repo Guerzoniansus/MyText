@@ -6,7 +6,7 @@ import me.confuser.barapi.BarAPI;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class MonkeyPlugin extends JavaPlugin implements Listener {
+	
+	//http://pastebin.com/nGW57tnm
 	
 	private BarMessages bMessages = new BarMessages();
 
@@ -38,12 +40,14 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
             public void run() {
                 
             	for (Player p : Bukkit.getServer().getOnlinePlayers()){
-            		BarAPI.setMessage(p, bMessages.randomString(), 5);
+            		if (getConfig().getString("server").equals("creative")) BarAPI.setMessage(p, bMessages.randomStringCreative(), 10);
+            		if (getConfig().getString("server").equals("survival")) BarAPI.setMessage(p, bMessages.randomStringSurvival(), 10);
+            		p.playSound(p.getLocation(), Sound.NOTE_PLING, 5, 1);
             	}
             	
             	//6000 ticks = 5 minutes
             }
-        }, 0L, 1200);
+        }, 0L, 6000);
         
 	}
 
