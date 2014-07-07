@@ -1,6 +1,9 @@
 package NomarTheHero;
 
 import java.util.HashMap;
+
+import me.confuser.barapi.BarAPI;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,6 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class MonkeyPlugin extends JavaPlugin implements Listener {
+	
+	private BarMessages bMessages = new BarMessages();
 
 	public static HashMap<String, WEVoteTime> WEvotes = new HashMap<String, WEVoteTime>();
 
@@ -26,6 +31,21 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
 		getCommand("tempperm").setExecutor(new VoteCommand(this));
 		this.saveDefaultConfig();
+		
+		BukkitScheduler barBroadcaster = Bukkit.getServer().getScheduler();
+        barBroadcaster.scheduleSyncRepeatingTask(this, new Runnable() {
+        	
+            @Override
+            public void run() {
+                
+            	for (Player p : Bukkit.getServer().getOnlinePlayers()){
+            		BarAPI.setMessage(p, bMessages.randomString(), 5);
+            	}
+            	
+            	//6000 ticks = 5 minutes
+            }
+        }, 0L, 6000L);
+        
 	}
 
 	public void onDisable() {
