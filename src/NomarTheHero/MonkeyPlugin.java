@@ -9,9 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -44,7 +42,7 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
             	
             	//6000 ticks = 5 minutes
             }
-        }, 0L, 6000L);
+        }, 0L, 1200);
         
 	}
 
