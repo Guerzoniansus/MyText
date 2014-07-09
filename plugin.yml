@@ -16,3 +16,5 @@ commands:
     description: Links to the Member page
   tempperm:
     description: nothing
+  sounds:
+    description: Enable or Disable chat sounds

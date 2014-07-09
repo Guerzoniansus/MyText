@@ -12,7 +12,7 @@ public class BarMessages {
 	
 	public String[] messagesCreative = {
 			green + "The Survival Server IP: " + gold + "Life.MonkeyGamesMC.com",
-			gold + "Donating " + green + "keeps the server alive! Type" + gold + "/shop!",
+			gold + "Donating " + green + "keeps the server alive! Type " + gold + "/shop!",
 			green + "To turn chat sounds off type " + gold + "/sounds off",
 			green + "Don't forget to " + gold + "/vote " + green + "for WorldEdit!",
 			green + "Website:  " + gold + "http://MonkeyGamesMC.com"
@@ -20,7 +20,7 @@ public class BarMessages {
 	
 	public String[] messagesSurvival = {
 			green + "The Creative Server IP: " + gold + "Build.MonkeyGamesMC.com",
-			gold + "Donating " + green + "keeps the server alive! Type" + gold + "/shop!",
+			gold + "Donating " + green + "keeps the server alive! Type " + gold + "/shop!",
 			green + "To turn chat sounds off type " + gold + "/sounds off",
 			green + "Don't forget to " + gold + "/vote " + green + "for /tpa and $75!",
 			green + "Website:  " + gold + "http://MonkeyGamesMC.com"

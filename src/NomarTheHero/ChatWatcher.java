@@ -87,7 +87,9 @@ public class ChatWatcher implements Listener{
 			}
 			
 			for (Player player : Bukkit.getServer().getOnlinePlayers()){
-				player.playSound(player.getLocation(), Sound.ITEM_PICKUP, 1, 1);
+				if (SoundsCommand.soundEnabled.contains(p.getName())){
+					player.playSound(player.getLocation(), Sound.ITEM_PICKUP, 1, 1);
+				}
 			}
 
 		}

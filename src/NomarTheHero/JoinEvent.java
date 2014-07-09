@@ -26,6 +26,8 @@ public class JoinEvent implements Listener{
 	public void onJoin(PlayerJoinEvent e) {
 		final Player p = e.getPlayer();
 		
+		SoundsCommand.soundEnabled.add(p.getName());
+		
 		for (Player player : Bukkit.getServer().getOnlinePlayers()){
 			player.playSound(player.getLocation(), Sound.NOTE_PLING, 1, 1);
 		}

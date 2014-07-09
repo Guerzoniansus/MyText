@@ -31,7 +31,12 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 		getServer().getPluginManager().registerEvents(new ChatWatcher(), this);
 		getServer().getPluginManager().registerEvents(new JoinEvent(this), this);
 		getCommand("tempperm").setExecutor(new VoteCommand(this));
+		getCommand("sounds").setExecutor(new SoundsCommand());
 		this.saveDefaultConfig();
+		
+		for (Player player : Bukkit.getServer().getOnlinePlayers()){
+			SoundsCommand.soundEnabled.add(player.getName());
+		}
 		
 		BukkitScheduler barBroadcaster = Bukkit.getServer().getScheduler();
         barBroadcaster.scheduleSyncRepeatingTask(this, new Runnable() {
