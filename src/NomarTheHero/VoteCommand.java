@@ -121,7 +121,7 @@ public class VoteCommand implements CommandExecutor {
 			 */
 
 			// makes new TPAVoteTime var
-			TPAVoteTime weTime = new TPAVoteTime(ign, System.currentTimeMillis(), 36000L);
+			TPAVoteTime weTime = new TPAVoteTime(ign, System.currentTimeMillis(), 1728000L);
 
 			// puts in in le list
 			MonkeyPlugin.TPAvotes.put(ign, weTime);
@@ -129,7 +129,7 @@ public class VoteCommand implements CommandExecutor {
 			// 36000 ticks in 30 minutes
 
 			// makes le TPAVoteTime var run in 30 minutes
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 36000L);
+			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 1728000L);
 
 			// allows the player to use TPA
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpa");
