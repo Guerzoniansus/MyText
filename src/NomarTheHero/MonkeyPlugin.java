@@ -1,11 +1,8 @@
 package NomarTheHero;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-
 import me.confuser.barapi.BarAPI;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
@@ -69,44 +66,34 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 	public void onDisable() {
 		for (String pName : WEvotes.keySet()) {
 
-			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
+			storeVotePlayer(pName, WEvotes.get(pName).getTicksLeft(), "wevote.");
 
 		}
 
 		for (String pName : TPAvotes.keySet()) {
 
-			storeTPAPlayer(pName, TPAvotes.get(pName).getTicksLeft());
-
-			//Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpa");
-			//Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpahere");
-
+			storeVotePlayer(pName, TPAvotes.get(pName).getTicksLeft(), "tpavote.");
 		}
 
 		this.saveConfig();
 
 	}
 
-	public void storeTPAPlayer(String name, long timeLeft) {
+	public void storeVotePlayer(String name, long timeLeft, String path) {
 
-		// Map<String, Long> map = new HashMap<String, Long>();
-
-		// map.put(name, timeLeft);
-
-		getConfig().set("tpavote." + name + ".time", timeLeft);
+		getConfig().set(path + name, timeLeft);
 
 	}
 
 	public void getPlayers() {
 
-		// getConfig().get
-
-		// for (Map<?, ?> map : getConfig().get) {
-
 		Set<String> peoples = getConfig().getConfigurationSection("tpavote").getKeys(false);
 
 		for (String people : peoples) {
 
-			long timeLeft = getConfig().getLong("tpavote." + people + ".time");
+			long timeLeft = getConfig().getLong("tpavote." + people);
+
+			getConfig().set("tpavote." + people, null);
 
 			TPAVoteTime TV = new TPAVoteTime(people, System.currentTimeMillis(), timeLeft);
 
@@ -116,7 +103,23 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 
 		}
 
-		// }
+		Set<String> wepeoples = getConfig().getConfigurationSection("wevote").getKeys(false);
+
+		for (String people : wepeoples) {
+
+			long timeLeft = getConfig().getLong("wevote." + people);
+
+			getConfig().set("wevote." + people, null);
+
+			WEVoteTime TV = new WEVoteTime(people, System.currentTimeMillis(), timeLeft);
+
+			WEvotes.put(people, TV);
+
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, TV, timeLeft);
+
+		}
+
+		this.saveConfig();
 
 	}
 

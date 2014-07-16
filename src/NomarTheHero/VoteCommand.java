@@ -25,10 +25,10 @@ public class VoteCommand implements CommandExecutor {
 
 		final String ign = args[0];
 
-		final Player player = plugin.getServer().getPlayer(ign);
+		final Player player = Bukkit.getServer().getPlayer(ign);
 
 		if (player == null) {
-			plugin.getServer().getLogger().info("Could not give tempperm time to player " + ign);
+			Bukkit.getServer().getLogger().info("Could not give tempperm time to player " + ign);
 			return true;
 
 		}
@@ -56,7 +56,7 @@ public class VoteCommand implements CommandExecutor {
 				MonkeyPlugin.WEvotes.put(ign, newVT);
 
 				// schedules the VT
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
+				Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
 
 				// sends confirmation
 				player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining WorldEdit time!");
@@ -79,7 +79,7 @@ public class VoteCommand implements CommandExecutor {
 			// 36000 ticks in 30 minutes
 
 			// makes le WEVoteTime var run in 30 minutes
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 36000L);
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 36000L);
 
 			// allows the player to use WE
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set worldedit.*");
@@ -97,7 +97,7 @@ public class VoteCommand implements CommandExecutor {
 				existing.cancel();
 
 				// makes new VT
-				TPAVoteTime newVT = new TPAVoteTime(ign, System.currentTimeMillis(), 36000L + existing.getTicksLeft());
+				TPAVoteTime newVT = new TPAVoteTime(ign, System.currentTimeMillis(), 1728000L + existing.getTicksLeft());
 
 				// removes old VT
 				MonkeyPlugin.TPAvotes.remove(ign);
@@ -106,10 +106,10 @@ public class VoteCommand implements CommandExecutor {
 				MonkeyPlugin.TPAvotes.put(ign, newVT);
 
 				// schedules the VT
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 36000L + existing.getTicksLeft());
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, newVT, 1728000L + existing.getTicksLeft());
 
 				// sends confirmation
-				player.sendMessage(ChatColor.GOLD + "30 minutes have been added onto your remaining TPA time!");
+				player.sendMessage(ChatColor.GOLD + "24 hours have been added onto your remaining TPA time!");
 
 				return true;
 			}
@@ -129,7 +129,8 @@ public class VoteCommand implements CommandExecutor {
 			// 36000 ticks in 30 minutes
 
 			// makes le TPAVoteTime var run in 30 minutes
-			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 1728000L);
+			// add 8000 to end
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, weTime, 1728000L);
 
 			// allows the player to use TPA
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + ign + " set essentials.tpa");
