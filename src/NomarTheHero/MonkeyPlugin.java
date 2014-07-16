@@ -1,6 +1,8 @@
 package NomarTheHero;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import me.confuser.barapi.BarAPI;
 
@@ -15,9 +17,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class MonkeyPlugin extends JavaPlugin implements Listener {
-	
-	//http://pastebin.com/nGW57tnm
-	
+
+	// http://pastebin.com/nGW57tnm
+
 	private BarMessages bMessages = new BarMessages();
 
 	public static HashMap<String, WEVoteTime> WEvotes = new HashMap<String, WEVoteTime>();
@@ -33,44 +35,90 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 		getCommand("tempperm").setExecutor(new VoteCommand(this));
 		getCommand("sounds").setExecutor(new SoundsCommand());
 		this.saveDefaultConfig();
-		
-		for (Player player : Bukkit.getServer().getOnlinePlayers()){
+
+		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 			SoundsCommand.soundEnabled.add(player.getName());
+
 		}
-		
+
 		BukkitScheduler barBroadcaster = Bukkit.getServer().getScheduler();
-        barBroadcaster.scheduleSyncRepeatingTask(this, new Runnable() {
-        	
-            @Override
-            public void run() {
-                
-            	for (Player p : Bukkit.getServer().getOnlinePlayers()){
-            		if (getConfig().getString("server").equals("creative")) BarAPI.setMessage(p, bMessages.randomStringCreative(), 10);
-            		if (getConfig().getString("server").equals("survival")) BarAPI.setMessage(p, bMessages.randomStringSurvival(), 10);
-            		p.playSound(p.getLocation(), Sound.NOTE_PLING, 5, 1);
-            	}
-            	
-            	//6000 ticks = 5 minutes
-            }
-        }, 0L, 6000);
-        
+		barBroadcaster.scheduleSyncRepeatingTask(this, new Runnable() {
+
+			@Override
+			public void run() {
+
+				for (Player p : Bukkit.getServer().getOnlinePlayers()) {
+					if (getConfig().getString("server").equals("creative"))
+						BarAPI.setMessage(p, bMessages.randomStringCreative(), 10);
+
+					if (getConfig().getString("server").equals("survival"))
+						BarAPI.setMessage(p, bMessages.randomStringSurvival(), 10);
+
+					p.playSound(p.getLocation(), Sound.NOTE_PLING, 5, 1);
+
+				}
+
+				// 6000 ticks = 5 minutes
+			}
+		}, 0L, 6000);
+
+		getPlayers();
+
 	}
 
 	public void onDisable() {
 		for (String pName : WEvotes.keySet()) {
-			
+
 			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset worldedit.*");
-			
+
 		}
 
 		for (String pName : TPAvotes.keySet()) {
 
-			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpa");
-			Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpahere");
+			storeTPAPlayer(pName, TPAvotes.get(pName).getTicksLeft());
+
+			//Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpa");
+			//Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "perm player " + pName + " unset essentials.tpahere");
 
 		}
+
+		this.saveConfig();
+
 	}
 
+	public void storeTPAPlayer(String name, long timeLeft) {
+
+		// Map<String, Long> map = new HashMap<String, Long>();
+
+		// map.put(name, timeLeft);
+
+		getConfig().set("tpavote." + name + ".time", timeLeft);
+
+	}
+
+	public void getPlayers() {
+
+		// getConfig().get
+
+		// for (Map<?, ?> map : getConfig().get) {
+
+		Set<String> peoples = getConfig().getConfigurationSection("tpavote").getKeys(false);
+
+		for (String people : peoples) {
+
+			long timeLeft = getConfig().getLong("tpavote." + people + ".time");
+
+			TPAVoteTime TV = new TPAVoteTime(people, System.currentTimeMillis(), timeLeft);
+
+			TPAvotes.put(people, TV);
+
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, TV, timeLeft);
+
+		}
+
+		// }
+
+	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		Player p = (Player) sender;
@@ -122,6 +170,5 @@ public class MonkeyPlugin extends JavaPlugin implements Listener {
 
 		return false;
 	}
-
 
 }
